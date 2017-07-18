@@ -1,0 +1,44 @@
+README file for Diffusion Velocity Change Point Detection Programs
+
+Contact (unless otherwise noted): nsong@alumni.princeton.edu
+(C) Nancy Song, Princeton University
+
+Overview: this repository contains parallelized and non-parallel versions to detect change points
+in diffusion and velocity
+
+Requirements: GNU C Library 2.12.2+, OpenMPI 1.4.2+ (parallel only)
+
+Instructions:
+(1)	Build programs using makefile
+(2)	Run using the following arguments: filename, alpha, beta, delta_t
+	(a) alpha is the Type-I error
+	(b) beta is the confidence region. Only accepts values from {0.69, 0.90, 0.95, 0.99}
+	(c) delta_t is the time-step
+(3)	Output is a file with the name of the file appended with .cp that has the time index of the 
+	change point detected and the left and right confidence intervals
+
+Example: The following runs parallel diffusion/velocity change point detection on the file file1 
+		 with two processes and a Type-I error of 0.05 and a confidence interval of 0.95
+
+		Type into command terminal:
+		mpirun -np 2 Parallel-DV 0.05 0.95
+
+		Output file would be file1.cp
+		Sample from file1.cp:	
+		99 97 104
+
+		This indicates that a change point was found at the 99th time step. 
+		Confidence region is from index 97 to 104
+
+Example: The following runs diffusion/velocity change point detection on the file file1 
+		 with two processes and a Type-I error of 0.05 and a confidence interval of 0.95
+
+		Type into command terminal:
+		Single-DV 0.05 0.95
+
+		Output file would be file1.cp
+		Sample from file1.cp:	
+		99 97 104
+
+		This indicates that a change point was found at the 99th time step. 
+		Confidence region is from index 97 to 104
