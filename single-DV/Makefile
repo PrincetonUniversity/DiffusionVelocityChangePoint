@@ -4,17 +4,17 @@
 # 
 
 UNAME := $(shell uname)
-PROGRAM = Parallel-GM
+PROGRAM = DVCP
 SOURCES = CPTree.c C_ac.c CheckCP.c FindCP.c MakeCPArray.c main.c \
           Vostrikova.c zbrent.c changepoint.h critical_values.h
 OBJECTS = CPTree.o C_ac.o CheckCP.o FindCP.o MakeCPArray.o main.o \
 			Vostrikova.o zbrent.o
 LIB = -lm -lgsl -lgslcblas -lrt
 CFLAGS = -O3
-CC = mpicc
+CC = gcc
 
-MPI_COMPILE_FLAGS = $(shell mpicc --showme:compile)
-MPI_LINK_FLAGS = $(shell mpicc --showme:link)
+GCC_COMPILE_FLAGS = $(shell gcc --showme:compile)
+GCC_LINK_FLAGS = $(shell gcc --showme:link)
 
 ifeq ($(strip $(OSTYPE)),msys)
   ########## MinGW - msys ##########
@@ -37,9 +37,9 @@ ifeq ($(strip $(OSTYPE)),linux-gnu)
 endif
 
 $(PROGRAM): $(OBJECTS)
-	$(CC) $(OBJECTS) $(MPI_LINK_FLAGS) -o $(PROGRAM) $(LIB) $(LIBDIRFLAG) 
+	$(CC) $(OBJECTS) $(GCC_LINK_FLAGS) -o $(PROGRAM) $(LIB) $(LIBDIRFLAG) 
 
-.c.o:   ; $(CC) $(MPI_COMPILE_FLAGS) -c $*.c $(INCDIRFLAG)
+.c.o:   ; $(CC) $(GCC_COMPILE_FLAGS) -c $*.c $(INCDIRFLAG)
 
 clean:
 	rm -f $(PROGRAM) $(OBJECTS)
