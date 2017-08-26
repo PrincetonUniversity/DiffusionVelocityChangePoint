@@ -37,7 +37,7 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 	double kL, nL;												// Double analogs in integers
 	double lmean, lvar, rmean, rvar, wvar, wmean; 				// Calculation of log-likelihood
 	double critical_region;			// Critical value for specified alpha and N
-	double llrt_max=0.0;			// Maximum log-likelihood
+	double *llrt, llrt_max=0.0;		// Maximum log-likelihood
 	double *cumsum, *cumsumSq;		// Arrays to store values
 	enum bool dummy_bool = false;	// If applicable, denotes if found CP has been inserted
 	double dim = 2;					// Two dimensions for log-likelihood calculation
@@ -141,7 +141,7 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 			// Calculate right variance with respect to mu_0
 			vrvar = (wvar*delta_t*2.0*(nL-1.0) - vlvar[k_max] * k_max)/(nL-k_max-1.0);
 			// Calculate overall variance
-	      	wvart = (lvar_max*k_max + rvar_max*(nL-k_max-1.0))/(nL-1.0);
+	      	wvar = (lvar_max*k_max + rvar_max*(nL-k_max-1.0))/(nL-1.0);
 
 	      	/* BIC model selection for type of change point. Can find max of -BIC = 2*LL - penalty
 			mBIC = (1-nL) * log(2*M_PI*wvart)-(nL-1.0) - 3 * log(nL-1);
@@ -173,9 +173,9 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 			// Recursively find change points
 			if((rc==1)||(rc==0)){
 				// Go to the left branch
-				cp1 = FindCP(cp, traj, cpl, LB+cpl, alpha, beta, Ncp, ca, Na, 1);
+				cp1 = FindCP(cp, traj, delta_t, cpl, LB+cpl, alpha, beta, Ncp, ca, Na, 1);
 				// Go to the right branch
-				cp1 = FindCP(cp, traj, RB+cpl, cpr, alpha, beta, Ncp, ca, Na, 1);
+				cp1 = FindCP(cp, traj, delta_t, RB+cpl, cpr, alpha, beta, Ncp, ca, Na, 1);
 				if (cp1 > cp_max ) 
 					cp_max = cp1;
 			}
