@@ -4,7 +4,7 @@
 # 
 
 UNAME := $(shell uname)
-PROGRAM = DVCP
+PROGRAM = Single-DV
 SOURCES = CPTree.c C_ac.c CheckCP.c FindCP.c MakeCPArray.c main.c \
           Vostrikova.c zbrent.c changepoint.h critical_values.h
 OBJECTS = CPTree.o C_ac.o CheckCP.o FindCP.o MakeCPArray.o main.o \
