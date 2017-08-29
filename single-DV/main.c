@@ -31,11 +31,12 @@ int main(int argc, char *argv[])
 	double alpha = 0.075;  // Type-I error, mis-specify transition
 	double beta = 0.075;   // Confidence interval (CI), mis-specify transition
 	double delta_t = 1;    // Time unit between measurements
-	size_t L = 0;          // Total number of data points
-	size_t NA_BASE;        // Maximum length that can be processed before recursion
-	size_t N_ca;           // Total number ca (critical values for confidence interval)
-	size_t ui;             // Dummy index
-	size_t cpl, cpr, int cp1; // FindCP left start, right end, and return value
+	int L = 0;             // Total number of data points
+	int NA_BASE;           // Maximum length that can be processed before recursion
+	int NA_OVERLAP = 200;  // Overlap length
+	int N_ca;              // Total number ca (critical values for confidence interval)
+	int ui;    	       // Dummy index
+	int cpl, cpr, cp1;     // FindCP left start, right end, and return value
 	int Ncp = 0, Ncpdlt;   // Change points found, deleted
 	double tmp;            // Temporary variable for input
 	double *traj;          // Time series
