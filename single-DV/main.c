@@ -19,7 +19,6 @@ alpha:      Type-I error
 #include <gsl/gsl_version.h>
 #include "changepoint.h"
 #include "critical_values.h"
-#include <mpi.h>
 #include <math.h>
 
 #define TOL 1.0e-10
