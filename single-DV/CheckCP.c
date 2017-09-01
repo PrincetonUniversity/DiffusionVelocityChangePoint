@@ -10,7 +10,7 @@ CheckCP.c - Check change points sequentially
 #include <gsl/gsl_math.h>
 #include "changepoint.h"
 
-struct changepoint** DelCPNode();
+struct changepoint* DelCPNode();
 
 // Check change points in tree with root node at *cp_root for time series traj
 // Change points were found with Type-I error of alpha and confidence interval 
