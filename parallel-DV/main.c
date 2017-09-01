@@ -446,9 +446,11 @@ int main(int argc, char *argv[])
 			MPI_COMM_WORLD);
 
 		free(split);
-		free(cpArray[0]);
-		free(rbArray[0]);
-		free(lbArray[0]);
+		if(Ncp>1) {
+			free(cpArray[0]);
+			free(rbArray[0]);
+			free(lbArray[0]);
+		}
 		free(cpArray);
 		free(rbArray);
 		free(lbArray);
