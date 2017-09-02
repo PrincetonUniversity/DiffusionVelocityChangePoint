@@ -34,13 +34,13 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 	int cp2=0, cp1=0, cp_max;   	//largest change point in absolute index
 
 	//Relevant variables for gaussian mean change point detection
-	double kL, nL;												// Double analogs in integers
-	double lmean, lvar, rmean, rvar, wvar, wmean; 				// Calculation of log-likelihood
-	double critical_region;			// Critical value for specified alpha and N
-	double *llrt, llrt_max=0.0;		// Maximum log-likelihood
-	double *cumsum, *cumsumSq;		// Arrays to store values
+	double kL, nL;			// Double analogs in integers
+	double lmean, lvar, rmean, rvar, wvar, wmean; 	// Calculation of log-likelihood
+	double critical_region;		// Critical value for specified alpha and N
+	double *llrt, llrt_max=0.0;	// Maximum log-likelihood
+	double *cumsum, *cumsumSq;	// Arrays to store values
 	enum bool dummy_bool = false;	// If applicable, denotes if found CP has been inserted
-	double dim = 2.0;				// Two dimensions for log-likelihood calculation
+	double dim = 2.0;		// Two dimensions for log-likelihood calculation
 
 	// Used in calculation of type of change point
 	double *vlvar, vrvar;
@@ -59,6 +59,7 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 		cumsum = (double *) malloc( (n+1) * sizeof(double));
 		cumsumSq = (double *) malloc( (n+1) * sizeof(double));
 		llrt = (double *) calloc((n+1),sizeof(double));
+		vlvar = (double *) calloc((n+1),sizeof(double));
 
 		// Calculate the critical region using Horvath's approximation
 		// Note that the dimensions are two since two parameters are considered
@@ -116,9 +117,9 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 				llrt_max = llrt[k];
 				k_max = k;
 				lvar_max= lvar*delta_t*2.0;
-	        	rvar_max = rvar*delta_t*2.0;
-	        	lmean_max = lmean;
-	        	rmean_max = rmean;
+	        		rvar_max = rvar*delta_t*2.0;
+	        		lmean_max = lmean;
+	        		rmean_max = rmean;
 			}
 		}
 
@@ -164,9 +165,11 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 
 			// No recursion for checking change points
 			if(rc==3){
-				/*********************
-				Free up used workspace
-				*********************/
+				free(llrt);
+				free(vlvar);
+				free(cumsum);
+				free(cumsumSq);
+				
 				// Return index of change point found
 				return k_max+cpl;
 			}
