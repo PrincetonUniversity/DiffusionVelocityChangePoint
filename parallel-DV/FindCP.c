@@ -59,6 +59,7 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 		cumsum = (double *) malloc( (n+1) * sizeof(double));
 		cumsumSq = (double *) malloc( (n+1) * sizeof(double));
 		llrt = (double *) calloc((n+1),sizeof(double));
+		vlvar = (double *) malloc( (n+1) * sizeof(double));
 
 		// Calculate the critical region using Horvath's approximation
 		// Note that the dimensions are two since two parameters are considered
@@ -164,9 +165,10 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 
 			// No recursion for checking change points
 			if(rc==3){
-				/*********************
-				Free up used workspace
-				*********************/
+				free(llrt);
+				free(cumsum);
+				free(cumsumSq);
+				free(vlvar);
 				// Return index of change point found
 				return k_max+cpl;
 			}
