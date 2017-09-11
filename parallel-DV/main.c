@@ -42,9 +42,8 @@ int main(int argc, char *argv[])
 	clock_t time0, time1;   // Variables for timing
 	int h,i,j,k;            // Dummy indices
 	int trace=0;            // Debug flag
-	double *ca=NULL;        // Critical region threshold for confidence interval
 	enum bool done = false;
-	int NA_BASE;
+	int NA_BASE = (int) 10000;
 	int NA_OVERLAP = (int) 200;
 
 	// Variables related to parallelization 
@@ -87,7 +86,6 @@ int main(int argc, char *argv[])
 	}
 
 	// Initiate MPI Processes
-	NA_BASE = N_ca;
 	root_process = 0;
 
 	ierr = MPI_Init(&argc, &argv);
