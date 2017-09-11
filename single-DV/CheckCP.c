@@ -16,8 +16,8 @@ struct changepoint* DelCPNode();
 // Change points were found with Type-I error of alpha and confidence interval 
 // of beta. Ncpdlt is the number of change points that were deleted. ca describes 
 // the critical value for the confidence interval. Na is the length of time series
-void CheckCP(struct changepoint** cp_root, double* traj, double delta_t, double alpha, double beta, 
-	int* Ncpdlt, int trace, double* ca, int N) {
+void CheckCP(struct changepoint** cp_root, double* traj, double delta_t, double alpha,
+	int* Ncpdlt, int trace, int N) {
 	int            *cps=NULL, *cpsl=NULL, *cpsr=NULL, cp1;
 	int            Ncp=0, Ny=0, Ny2=0;
 	int            i, istart=1, iend=0;
@@ -60,7 +60,7 @@ void CheckCP(struct changepoint** cp_root, double* traj, double delta_t, double 
 				break;
 			}
 			// Find change point
-			cp1=FindCP(cp_root,traj,delta_t,cps[i-1]+1,cps[i+1]-1,alpha,beta,&Ncp,ca,N,3);
+			cp1=FindCP(cp_root,traj,delta_t,cps[i-1]+1,cps[i+1]-1,alpha,&Ncp,N,3);
 
 			// No change point found
 			if (cp1==0){

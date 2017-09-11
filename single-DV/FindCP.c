@@ -28,7 +28,7 @@ struct changepoint* AddCPNode();
 // to tree pointed to by cp. ca points to confidence region critical values. Na is length
 // of traj, rc indicates recursive tracing
 int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int cpr, double alpha, 
-	double beta, int * Ncp, double *ca, int Na, int rc ) {
+	int * Ncp, int Na, int rc ) {
 	int n,i,k,k_max;				//indices to iterate through traj	
 	int LB, RB;                 	//left and right bounds of confidence region
 	int cp2=0, cp1=0, cp_max;   	//largest change point in absolute index
@@ -124,17 +124,8 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 		}
 
 		if ( llrt_max > critical_region ) {
-			// Find the left-hand bound of critical region
-			k = k_max;
-			while ( (k>1) && (llrt_max - llrt[k-1] < ca[n]) )
-				k--;
-			LB = k;
-
-			// Find the right-hand bound of critical region
-			k = k_max;
-			while ( (k < n-1) && (llrt[k+1]+ca[n]-llrt_max > 0) ) 
-				k++;
-			RB = k;
+			LB = k_max;
+			RB = k_max;
 			cp_max = cpl + RB;
 
 			// Determine type of change point
@@ -142,9 +133,9 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 			// Calculate right variance with respect to mu_0
 			vrvar = (wvar*delta_t*2.0*(nL-1.0) - vlvar[k_max] * k_max)/(nL-k_max-1.0);
 			// Calculate overall variance
-	      		wvar = (lvar_max*k_max + rvar_max*(nL-k_max-1.0))/(nL-1.0);
+	      	wvar = (lvar_max*k_max + rvar_max*(nL-k_max-1.0))/(nL-1.0);
 
-	      		/* BIC model selection for type of change point. Can find max of -BIC = 2*LL - penalty
+	      	/* BIC model selection for type of change point. Can find max of -BIC = 2*LL - penalty
 			mBIC = (1-nL) * log(2*M_PI*wvart)-(nL-1.0) - 3 * log(nL-1);
 			vBIC = -k_max*log(2*M_PI*vlvar[k_max]) -(nL-k_max-1.0)*log(2*M_PI*vrvar) -(nL-1)-3*log(nL-1);
 			mvBIC = -k_max*log(2*M_PI*lvar_max) -(nL-k_max-1.0)*log(2*M_PI*rvar_max) -(nL-1)-4*log(nL-1);
@@ -176,9 +167,9 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 			// Recursively find change points
 			if((rc==1)||(rc==0)){
 				// Go to the left branch
-				cp1 = FindCP(cp, traj, delta_t, cpl, LB+cpl, alpha, beta, Ncp, ca, Na, 1);
+				cp1 = FindCP(cp, traj, delta_t, cpl, LB+cpl, alpha, Ncp, Na, 1);
 				// Go to the right branch
-				cp1 = FindCP(cp, traj, delta_t, RB+cpl, cpr, alpha, beta, Ncp, ca, Na, 1);
+				cp1 = FindCP(cp, traj, delta_t, RB+cpl, cpr, alpha, Ncp, Na, 1);
 				if (cp1 > cp_max ) 
 					cp_max = cp1;
 			}
