@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
 {
 	FILE *fpin, *fpout;		// Filenames and output names
 	char in_name[255],  filename[255], *endptr[255], out_name[255];	// Store strings
-	char buffer[65536];     // Input buffer
 	double alpha = 0.075;   // Type-I error, mis-specify transition
 	double delta_t = 1;     // Time unit between measurements
 	int L = 0;              // Total number of data points
