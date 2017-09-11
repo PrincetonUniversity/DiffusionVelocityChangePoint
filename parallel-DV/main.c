@@ -1,11 +1,11 @@
 /*************************************************************************
 main.c:  Parallelized change point detection of diffusion and velocity
          Originally written using OpenMPI v1.4.2
-         Arguments are filename, timestep, alpha, beta
+         Arguments are filename, timestep, alpha
 
 filename:   File with Time Series Data
+delta_t:	Timestep
 alpha:      Type-I error
-1-beta:     Confidence Interval is chosen among {0.99, 0.95, 0.9, 0.69}
 *************************************************************************/
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -30,10 +30,8 @@ int main(int argc, char *argv[])
 	char in_name[255],  filename[255], *endptr[255], out_name[255];	// Store strings
 	char buffer[65536];     // Input buffer
 	double alpha = 0.075;   // Type-I error, mis-specify transition
-	double beta = 0.075;    // Confidence interval, mis-specify transition
 	double delta_t = 1;     // Time unit between measurements
 	int L = 0;              // Total number of data points
-	int N_ca;               // Total number of ca
 	int ui;                 // Dummy index
 	int cpl, cpr, cp1;      // Left bound, Right bound
 	int Ncp = 0;            // Change points found in each process
@@ -69,7 +67,7 @@ int main(int argc, char *argv[])
 	int flag;
 
 	// Get command line arguments
-	if (argc != 5) {
+	if (argc != 4) {
 		// No file name entered in the command line
 		printf("\nchangepoint %s%s build %s (GSL version %s)\n",        
 						CHANGEPOINT_VERSION, PLATFORM, COMPILE_DATE, GSL_VERSION);
@@ -80,45 +78,12 @@ int main(int argc, char *argv[])
 		printf("BUG    : Please send emails to hawyang-at-princeton.edu\n\n");
 		exit(1);
 	}
-	else if (argc == 5) {
+	else if (argc == 4) {
 		// Set the output filename
 		strcpy(in_name, argv[1]);
 		strcpy(out_name, argv[1]);
 		delta_t = strtod(argv[2], endptr);
 		alpha = strtod(argv[3], endptr);
-		beta = strtod(argv[4], endptr);
-	}
-
-	// Load confidence interval (beta) critical region data
-	if (beta == 0.99) {
-		N_ca = N_ca99;
-		ca = (double *) realloc(ca,N_ca*sizeof(double));
-		for (ui=0; ui<N_ca; ui++)
-			ca[ui] = ca99[ui];
-		}
-	else if (beta == 0.95) {
-		N_ca = N_ca95;
-		ca = (double *) realloc(ca,N_ca*sizeof(double));
-		for (ui=0; ui<N_ca; ui++)
-			ca[ui] = ca95[ui];
-		}
-	else if (beta == 0.9) {
-		N_ca = N_ca90;
-		ca = (double *) realloc(ca,N_ca*sizeof(double));
-		for (ui=0; ui<N_ca; ui++)
-			ca[ui] = ca90[ui];
-		}
-	else if (beta == 0.69) {
-		N_ca = N_ca69;
-		ca = (double *) realloc(ca,N_ca*sizeof(double));
-		for (ui=0; ui<N_ca; ui++)
-			ca[ui] = ca69[ui];
-		}
-	else {
-		printf("Critical region threshold for confidence region of %.2f is not supplied.\n",
-				beta);
-		printf("Available are: 0.01, 0.05, 0.1, and 0.31.\n");
-		exit(1);
 	}
 
 	// Initiate MPI Processes
@@ -177,13 +142,13 @@ int main(int argc, char *argv[])
 
 		// Multiple change point detection
 		if (NA_BASE > AVG_L)
-			cp1 = FindCP(&cp_root, traj, delta_t, 0, AVG_L, alpha, beta, &Ncp, ca, AVG_L, 1);
+			cp1 = FindCP(&cp_root, traj, delta_t, 0, AVG_L, alpha, &Ncp, AVG_L, 1);
 		else {
 			cpl = 0;
 			cpr = NA_BASE;
 			done = false;
 			while (!done) {
-				cp1 = FindCP(&cp_root, traj, delta_t, cpl, cpr, alpha, beta, &Ncp, ca, AVG_L, 1);
+				cp1 = FindCP(&cp_root, traj, delta_t, cpl, cpr, alpha, &Ncp, AVG_L, 1);
 				if (cpr < AVG_L) {
 					if(cp1 == 0)  cpl = cpr - NA_OVERLAP;
 					else  cpl = cp1;
@@ -195,7 +160,7 @@ int main(int argc, char *argv[])
 			}
 		}
 		// Check for spurious change points
-		CheckCP(&cp_root, traj, delta_t, alpha, beta, &Ncpdlt, trace, ca, AVG_L);
+		CheckCP(&cp_root, traj, delta_t, alpha, &Ncpdlt, trace, AVG_L);
 
 		// Store changepoints as array for each process
 		cpArray = realloc(cpArray, num_procs * sizeof(int*));
@@ -390,14 +355,14 @@ int main(int argc, char *argv[])
 
 		// Multiple change point detection on data in split
 		if (NA_BASE > AVG_L)
-			cp1 = FindCP(&cp_root, split, delta_t, 0, AVG_L, alpha, beta, &Ncp, ca, 
+			cp1 = FindCP(&cp_root, split, delta_t, 0, AVG_L, alpha, &Ncp,
 				AVG_L + NA_OVERLAP-1, 1);
 		else {
 			cpl = 0;
 			cpr = NA_BASE;
 			done = false;
 			while (!done) {
-				cp1 = FindCP(&cp_root, split, delta_t, cpl, cpr, alpha, beta, &Ncp, ca, 
+				cp1 = FindCP(&cp_root, split, delta_t, cpl, cpr, alpha, &Ncp,
 					AVG_L + NA_OVERLAP-1, 1);
 				if (cpr < AVG_L) {
 					if (cp1 == 0)
@@ -415,8 +380,7 @@ int main(int argc, char *argv[])
 		}
 
 		// Check change points sequentially and remove spurious ones 
-		CheckCP(&cp_root, split, delta_t, alpha, beta, &Ncpdlt, trace, 
-			ca, AVG_L + NA_OVERLAP);
+		CheckCP(&cp_root, split, delta_t, alpha, &Ncpdlt, trace, AVG_L + NA_OVERLAP);
 		Ncp = 0;
 
 		// dummy value allocation

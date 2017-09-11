@@ -10,22 +10,21 @@ Requirements: GNU C Library 2.12.2+, OpenMPI 1.4.2+ (parallelized only)
 
 Instructions:
 (1)	Build programs using makefile
-(2)	Run using the following arguments: filename, delta_t, alpha, beta
+(2)	Run using the following arguments: filename, delta_t, alpha
 	(a) delta_t is the time-step
 	(b) alpha is the Type-I error
-	(c) beta is the confidence region. Only accepts values from {0.69, 0.90, 0.95, 0.99}
 (3)	Output is a file with the name of the file appended with .cp that has the time index of the 
 	change point detected and the left and right confidence intervals
 
 Example: The following runs parallel diffusion velocity change point detection on the file file1 
-	 with two processes and a timestep of 0.001, Type-I error of 0.05, and a confidence interval of 0.95
+	 with two processes and a timestep of 0.001 and a Type-I error of 0.05
 
 		Type into command terminal:
-		mpirun -np 2 Parallel-DV 0.001 0.05 0.95
+		mpirun -np 2 Parallel-DV 0.001 0.05
 
 		Output file would be file1.cp
 		Sample from file1.cp:	
 		99 97 104
 
-		This indicates that a change point was found at the 99th time step. 
+		This indicates that a change point was found at the 99th data point. 
 		Confidence region is from index 97 to 104
