@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 		printf("] Examining %i change points sequentially ...\n",Ncp);
 		time0 = clock();
 		if (Ncp > 0)
-			CheckCP(&cp_root, traj, delta_t, alpha, trace, &Ncpdlt, trace, L);
+			CheckCP(&cp_root, traj, delta_t, alpha, &Ncpdlt, trace, L);
 		time1 = clock();
 		printf("  %i spurious change points removed. [%.0f s]\n", Ncpdlt, 
 			(double)(time1-time0)/CLOCKS_PER_SEC);
