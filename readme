@@ -27,4 +27,4 @@ Example: The following runs parallel diffusion velocity change point detection o
 		99
 		120
 
-		This indicates that a change point was found at the 99th and the 120th data points. 
+		This indicates that two change points were found at the 99th and the 120th data points. 
