@@ -27,4 +27,4 @@ Example: The following runs single process (non-parallelized) diffusion velocity
 		99
 		120
 
-		This indicates that a change point was found at the 99th and the 120th time steps. 
+		This indicates that two change points were found at the 99th and the 120th time steps. 
