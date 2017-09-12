@@ -311,8 +311,7 @@ int main(int argc, char *argv[])
 		fpout = fopen(filename, "w");
 		for(i = 0; i < num_procs; i++) {
 			for (k = 1; k <= sNcp[i]; k++)
-				fprintf(fpout, "%d %d %d\n", cpArray[i][k], lbArray[i][k], 
-					rbArray[i][k]);
+				fprintf(fpout, "%d\n", cpArray[i][k]);
 		}
 		fclose(fpout);
 
