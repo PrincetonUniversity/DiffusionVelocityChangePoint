@@ -133,7 +133,7 @@ int main(int argc, char *argv[])
 		printf("  saving file: %s \n", filename);
 		fpout = fopen( filename, "w");
 		for (i = 1; i <= Ncp; i++)
-			fprintf(fpout, "%d %d %d\n", cpArray[0][i], lbArray[0][i], rbArray[0][i]);
+			fprintf(fpout, "%d\n", cpArray[0][i]);
 		fclose(fpout);
 		
 		free(traj);
