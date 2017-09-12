@@ -318,7 +318,6 @@ int main(int argc, char *argv[])
 
 		// Free Workspace
 		free(traj);
-		free(ca);
 		for(i=0; i<num_procs; i++) {
 			free(cpArray[i]);
 			free(lbArray[i]);
