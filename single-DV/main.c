@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 	int NA_OVERLAP = 200;  // Overlap length
 	int ui;    	       // Dummy index
 	int cpl, cpr, cp1;     // FindCP left start, right end, and return value
-	int Ncp = 0, Ncpdlt;   // Change points found, deleted
+	int Ncp = 0, Ncpdlt=0;   // Change points found, deleted
 	double tmp;            // Temporary variable for input
 	double *traj;          // Time series
 	struct changepoint *cp_root=NULL; // Change point binary tree
