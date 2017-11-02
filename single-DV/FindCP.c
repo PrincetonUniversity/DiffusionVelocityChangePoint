@@ -123,7 +123,7 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 			}
 		}
 
-		if ( llrt_max > critical_region ) {
+		if ( llrt_max > 0.5*critical_region ) {
 			LB = k_max;
 			RB = k_max;
 			cp_max = cpl + RB;
