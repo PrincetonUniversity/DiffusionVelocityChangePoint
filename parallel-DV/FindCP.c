@@ -42,10 +42,10 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 	double dim = 2;					// Two dimensions for log-likelihood calculation
 
 	// Used in calculation of type of change point
-	//double *vlvar, vrvar;
-	//double lvar_max, rvar_max, lmean_max, rmean_max, wvar_max; 
-	//double mBIC, vBIC, mvBIC;
-	//int type = 0;
+	double *vlvar, vrvar;
+	double lvar_max, rvar_max, lmean_max, rmean_max, wvar_max; 
+	double mBIC, vBIC, mvBIC;
+	int type = 0;
 	
 	n = cpr - cpl;
 	LB = cpl;
@@ -130,9 +130,9 @@ int FindCP(struct changepoint **cp, double *traj, double delta_t, int cpl, int c
 			// Determine type of change point
 
 			// Calculate right variance with respect to mu_0
-			//vrvar = (wvar*delta_t*2.0*(nL-1.0) - vlvar[k_max] * k_max)/(nL-k_max-1.0);
+			vrvar = (wvar*delta_t*2.0*(nL-1.0) - vlvar[k_max] * k_max)/(nL-k_max-1.0);
 			// Calculate overall variance
-	      	//wvar = (lvar_max*k_max + rvar_max*(nL-k_max-1.0))/(nL-1.0);
+	      	wvar = (lvar_max*k_max + rvar_max*(nL-k_max-1.0))/(nL-1.0);
 
 	      	/* BIC model selection for type of change point. Can find max of -BIC = 2*LL - penalty
 			mBIC = (1-nL) * log(2*M_PI*wvart)-(nL-1.0) - 3 * log(nL-1);
