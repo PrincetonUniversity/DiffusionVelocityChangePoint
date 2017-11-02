@@ -160,11 +160,16 @@ int main(int argc, char *argv[])
 		CheckCP(&cp_root, traj, delta_t, alpha, &Ncpdlt, trace, AVG_L);
 
 		// Store changepoints as array for each process
-		cpArray = realloc(cpArray, num_procs * sizeof(int*));
-		lbArray = realloc(lbArray, num_procs * sizeof(int*));
-		rbArray = realloc(rbArray, num_procs * sizeof(int*));
+		cpArray = (int**) realloc(cpArray, num_procs * sizeof(int*));
+		lbArray = (int**) realloc(lbArray, num_procs * sizeof(int*));
+		rbArray = (int**) realloc(rbArray, num_procs * sizeof(int*));
 		Ncp = 0;
-
+		
+		// dummy value allocation
+		cpArray[0] = (int *) calloc(1, sizeof(int));
+		lbArray[0] = (int *) calloc(1, sizeof(int));
+		rbArray[0] = (int *) calloc(1, sizeof(int));
+		
 		MakeCPArray(cp_root, &cpArray[0], &lbArray[0], &rbArray[0], &Ncp);
 		sNcp = malloc(num_procs * sizeof(int));
 		sNcp[0] = Ncp;
@@ -328,7 +333,6 @@ int main(int argc, char *argv[])
 		free(sNcp);
 
 		ierr = MPI_Finalize();
-	
 	}
 
 	// Find change points in child processes
@@ -378,12 +382,10 @@ int main(int argc, char *argv[])
 		CheckCP(&cp_root, split, delta_t, alpha, &Ncpdlt, trace, AVG_L + NA_OVERLAP);
 		Ncp = 0;
 
-		// dummy value allocation
-		if(Ncp <= 1) {
-			cpArray[0] = malloc(sizeof(int));
-			lbArray[0] = malloc(sizeof(int));
-			rbArray[0] = malloc(sizeof(int));
-		}
+		/// dummy value allocation
+		cpArray[0] = (int *) calloc(1, sizeof(int));
+		lbArray[0] = (int *) calloc(1, sizeof(int));
+		rbArray[0] = (int *) calloc(1, sizeof(int));
 
 		// Add offsets to detected change points
 		MakeCPArray(cp_root, cpArray, lbArray, rbArray, &Ncp);
@@ -405,11 +407,9 @@ int main(int argc, char *argv[])
 			MPI_COMM_WORLD);
 
 		free(split);
-		if(Ncp>1) {
-			free(cpArray[0]);
-			free(rbArray[0]);
-			free(lbArray[0]);
-		}
+		free(cpArray[0]);
+		free(rbArray[0]);
+		free(lbArray[0]);
 		free(cpArray);
 		free(rbArray);
 		free(lbArray);
